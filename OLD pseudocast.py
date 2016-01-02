@@ -8,9 +8,9 @@ pygame.display.set_caption("PseudoCasting - Sam Tubb")
 
 frame = pygame.display.set_mode((320,240))
 
-vm = pygame.image.load("viewmodel.png")
+vm = pygame.image.load("OLD viewmodel.png")
 
-l = pygame.image.load("lakeside.png")
+l = pygame.image.load("OLD lakeside.png")
 
 pos = [25,15]
 
