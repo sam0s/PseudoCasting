@@ -17,6 +17,8 @@ pos = [25,15]
 def testArray(pos,levelmap):
     level = levelmap
 
+    #This is facing UP
+
     posgrid = [(pos[0],pos[1]),(pos[0]+1,pos[1]),(pos[0]+2,pos[1]),(pos[0]+3,pos[1]),
     (pos[0],pos[1]-1),(pos[0]+1,pos[1]-1),(pos[0]+2,pos[1]-1),(pos[0]+3,pos[1]-1),
     (pos[0],pos[1]-2),(pos[0]+1,pos[1]-2),(pos[0]+2,pos[1]-2),(pos[0]+3,pos[1]-2),
@@ -74,5 +76,9 @@ while go:
                 pos[1]-=1
             if e.key == K_DOWN:
                 pos[1]+=1
+            if e.key == K_LEFT:
+                pos[0]-=1
+            if e.key == K_RIGHT:
+                pos[0]+=1
 
 exit()
