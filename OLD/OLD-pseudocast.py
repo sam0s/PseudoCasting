@@ -4,13 +4,13 @@ import pygame
 from pygame.locals import *
 pygame.init()
 
-pygame.display.set_caption("PseudoCasting - Sam Tubb")
+pygame.display.set_caption("PseudoCasting - Old - Sam Tubb")
 
 frame = pygame.display.set_mode((320,240))
 
-vm = pygame.image.load("OLD viewmodel.png")
+vm = pygame.image.load("OLD-viewmodel.png")
 
-l = pygame.image.load("OLD lakeside.png")
+l = pygame.image.load("OLD-lakeside.png")
 
 pos = [25,15]
 
