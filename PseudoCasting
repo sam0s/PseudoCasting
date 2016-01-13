@@ -5,13 +5,58 @@ from pygame.locals import *
 pygame.init()
 
 frame = pygame.Surface((320,240))
-
-DISPLAY = pygame.display.set_mode((320,240),HWSURFACE|DOUBLEBUF)
+frame2 = pygame.Surface((64,64))
+DISPLAY = pygame.display.set_mode((384,240),HWSURFACE|DOUBLEBUF)
 
 vm = pygame.image.load("viewmodel.png")
 l = pygame.image.load("testlevel.png")
+
 pygame.display.set_caption("PseudoCasting Demo - 2.0 - Sam Tubb")
 
+def grabPallete(level):
+    #Create placeholder lists
+    a=[]
+    b=[]
+    c=[]
+    #Fill in lists with colors defind on level-image-file
+    x=33
+    on=True
+    #Use of Try/Except is only temporary!!!
+    try:
+        while on:
+            a.append(level.get_at([x,0]))
+            x+=1
+    except IndexError:
+        pass
+    x=33
+    on=True
+    try:
+        while on:
+            b.append(level.get_at([x,1]))
+            x+=1
+    except IndexError:
+        pass
+    x=33
+    on=True
+    try:
+        while on:
+            c.append(level.get_at([x,2]))
+            x+=1
+    except IndexError:
+        pass
+    #Return in order of (ground,wall,collide)
+    return a,b,c
+
+
+#Create Color Rules for Map
+colors_ground,colors_wall,colors_collide=grabPallete(l)
+
+def drawMinMap(level,player):
+    level_withdot = pygame.Surface((32,32))
+    level_withdot.blit(level,(0,0))
+    level_withdot.set_at(player,(255,0,0))
+    level_withdot = pygame.transform.scale(level_withdot,(64,64))
+    frame2.blit(level_withdot,(0,0))
 def generateView(pos,level):
     #Generate Color
     colors0=[[pos[0]-2,pos[1]-5],[pos[0]-2,pos[1]-4],[pos[0]-2,pos[1]-3],[pos[0]-2,pos[1]-2]]
@@ -19,8 +64,14 @@ def generateView(pos,level):
     colors2=[[pos[0],pos[1]-5],[pos[0],pos[1]-4],[pos[0],pos[1]-3],[pos[0],pos[1]-2],[pos[0],pos[1]-1]]
     colors3=[[pos[0]+1,pos[1]-5],[pos[0]+1,pos[1]-4],[pos[0]+1,pos[1]-3],[pos[0]+1,pos[1]-2],[pos[0]+1,pos[1]-1]]
     colors4=[[pos[0]+2,pos[1]-5],[pos[0]+2,pos[1]-4],[pos[0]+2,pos[1]-3],[pos[0]+2,pos[1]-2]]
+    allcolors = colors0+colors1+colors2+colors3+colors4
+    walls=[]
 
-    #Draw the View
+    for f in allcolors:
+        if level.get_at(f) in colors_wall:
+            walls.append(allcolors.index(f))
+
+    #Draw the Ground
     #0,0
     pygame.draw.polygon(frame, (level.get_at(colors0[0])), [(0,33),(0,43),(70,43),(76,33)], 0)
     #0,1
@@ -72,6 +123,115 @@ def generateView(pos,level):
     #4,3
     pygame.draw.polygon(frame, (level.get_at(colors4[3])), [(296,121),(319,150),(319,121)], 0)
 
+    #Draw the walls
+
+    if len(walls)>0:
+        #Colors4
+        if 19 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors4[0])), [(236,43),(236,0),(319,0),(319,43)], 0)
+            dark=level.get_at(colors4[0])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(236,43),(236,0),(228,0),(228,33)], 0)
+        if 20 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors4[1])), [(255,68),(255,0),(319,0),(319,68)], 0)
+            dark=level.get_at(colors4[1])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(255,68),(255,0),(237,0),(237,45)], 0)
+        if 21 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors4[2])), [(295,119),(295,0),(319,0),(319,119)], 0)
+            dark=level.get_at(colors4[2])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(295,119),(295,0),(257,0),(257,70)], 0)
+        if 22 in walls:
+            dark=level.get_at(colors4[3])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(319,150),(319,0),(296,0),(296,121)], 0)
+        #Colors3
+        if 14 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors3[0])), [(182,43),(182,0),(234,0),(234,43)], 0)
+            dark=level.get_at(colors3[0])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(182,43),(182,0),(179,0),(179,33)], 0)
+        if 15 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors3[1])), [(188,68),(188,0),(253,0),(253,68)], 0)
+            dark=level.get_at(colors3[1])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(188,68),(188,0),(182,0),(182,45)], 0)
+        if 16 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors3[2])), [(201,119),(201,0),(293,0),(293,119)], 0)
+            dark=level.get_at(colors3[2])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(201,119),(201,0),(188,0),(188,70)], 0)
+        if 17 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors3[3])), [(221,197),(221,0),(319,0),(319,197)], 0)
+            dark=level.get_at(colors3[3])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(221,197),(221,0),(201,0),(201,121)], 0)
+        if 18 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors3[4])), [(232,239),(232,0),(319,0),(319,239)], 0)
+            dark=level.get_at(colors3[4])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(232,239),(232,0),(221,0),(221,199)], 0)
+        #Colors0
+        if 0 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors0[0])), [(0,43),(70,43),(70,0),(0,0)], 0)
+            dark=level.get_at(colors0[0])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(70,43),(70,0),(76,0),(76,33)], 0)
+        if 1 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors0[1])), [(0,68),(0,0),(53,0),(53,68)], 0)
+            dark=level.get_at(colors0[1])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(53,68),(53,0),(68,0),(68,45)], 0)
+        if 2 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors0[2])), [(0,119),(0,0),(19,0),(19,120)], 0)
+            dark=level.get_at(colors0[2])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(19,119),(19,0),(51,0),(51,70)], 0)
+        if 3 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors0[3])), [(0,147),(0,0),(0,1),(1,147)], 0)
+            dark=level.get_at(colors0[3])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(1,144),(1,0),(17,0),(17,121)], 0)
+        #Colors1
+        if 4 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors1[0])), [(72,43),(72,0),(126,0),(126,43)], 0)
+            dark=level.get_at(colors1[0])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(126,43),(126,0),(129,0),(129,33)], 0)
+        if 5 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors1[1])), [(55,68),(55,0),(119,0),(119,68)], 0)
+            dark=level.get_at(colors1[1])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(119,69),(119,0),(126,0),(126,45)], 0)
+        if 6 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors1[2])), [(21,119),(21,0),(106,0),(106,119)], 0)
+            dark=level.get_at(colors1[2])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(106,119),(106,0),(119,0),(119,70)], 0)
+        if 7 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors1[3])), [(0,197),(0,0),(84,0),(84,197)], 0)
+            dark=level.get_at(colors1[3])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(84,197),(84,0),(105,0),(105,121)], 0)
+        if 8 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors1[4])), [(0,239),(0,0),(73,0),(73,239)], 0)
+            dark=level.get_at(colors1[4])
+            dark[0],dark[1],dark[2]=dark[0]/2,dark[1]/2,dark[2]/2
+            pygame.draw.polygon(frame, (dark), [(73,239),(73,0),(84,0),(84,199)], 0)
+        #Colors2
+        if 9 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors2[0])), [(128,43),(128,0),(180,0),(180,43)], 0)
+        if 10 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors2[1])), [(121,68),(121,0),(186,0),(186,68)], 0)
+        if 11 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors2[2])), [(108,119),(108,0),(199,0),(199,119)], 0)
+        if 12 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors2[3])), [(86,197),(86,0),(219,0),(219,197)], 0)
+        if 13 in walls:
+            pygame.draw.polygon(frame, (level.get_at(colors2[4])), [(75,239),(75,0),(230,0),(230,239)], 0)
+
+
 go = True
 
 playerPos=[15,15]
@@ -79,23 +239,23 @@ frame.fill((150,150,150))
 generateView(playerPos,l)
 while go:
     DISPLAY.blit(frame,(0,0))
+    DISPLAY.blit(frame2,(320,0))
     pygame.display.flip()
     for e in pygame.event.get():
         if e.type == QUIT:
             go = False
             pygame.display.quit()
         if e.type == KEYDOWN:
-            if e.key == K_F5:
-                pygame.display.toggle_fullscreen()
-            if e.key == K_UP:
+            if e.key == K_w:
                 playerPos[1]-=1
-            if e.key == K_DOWN:
+            if e.key == K_s:
                 playerPos[1]+=1
-            if e.key == K_LEFT:
+            if e.key == K_a:
                 playerPos[0]-=1
-            if e.key == K_RIGHT:
+            if e.key == K_d:
                 playerPos[0]+=1
             frame.fill((150,150,150))
             generateView(playerPos,l)
+            drawMinMap(l,playerPos)
 
 exit()
