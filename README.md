@@ -1,11 +1,10 @@
-# PseudoCasting
+# PsuedoCasting (working title) 
 
 Cool system of rendering Graphics, in a 2.5d Wolfenstein style.
 
 <I> Basically Fake Ray Casting. </I>
 
-# PsuedoCasting (working title) 
-is my new way of rendering "3d" graphics in python & pygame (or whatever language).
+PseudoCasting is my new way of rendering "3d" graphics in python & pygame (or whatever language).
 
 It's similar to [raycasting](http://lodev.org/cgtutor/raycasting.html), but more basic, and with less math.
 
